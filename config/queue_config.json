@@ -1,0 +1,19 @@
+{
+    "queues": [
+
+      {
+        "type": "sqs",
+        "queue_url": "",
+        "region": "us-east-1"
+      },
+      {
+        "type": "kafka",
+        "topic": "test-topic",
+        "brokers": "localhost:9092",
+        "options": {
+          "startingOffsets": "earliest"
+        }
+      }
+    ]
+  }
+  
