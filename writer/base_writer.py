@@ -5,3 +5,6 @@ class BaseWriter(ABC):
     def write(self, data):
         """Abstract method for writing data."""
         pass
+
+
+
