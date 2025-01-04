@@ -8,8 +8,8 @@ pipeline {
     }
     
     parameters {
-        string(name: 'S3_BUCKET', defaultValue: '', description: 'S3 bucket name')
-        string(name: 'S3_PATH', defaultValue: '', description: 'Path within S3 bucket')
+        string(name: 'S3_BUCKET', defaultValue: 'vinod123-test', description: 'S3 bucket name')
+        string(name: 'S3_PATH', defaultValue: '/', description: 'Path within S3 bucket')
         string(name: 'FILE_PATTERN', defaultValue: '*', description: 'File pattern to upload')
     }
     
