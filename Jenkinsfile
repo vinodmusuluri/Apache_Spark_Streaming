@@ -16,7 +16,7 @@ pipeline {
                     ]) {
                         // Upload a single file to S3 using the AWS credentials provided
                         sh """
-                            aws s3 cp src/main.py s3://${S3_BUCKET}/ \
+                            aws s3 cp src/* s3://${S3_BUCKET}/ \
                                 --region ${AWS_REGION}
                         """
                     }
