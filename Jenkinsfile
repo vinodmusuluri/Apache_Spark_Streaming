@@ -16,7 +16,7 @@ pipeline {
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
-                        // Upload single file to S3
+                        // Upload a single file to S3
                         sh """
                             aws s3 cp src/main.py s3://${S3_BUCKET}/ \
                                 --region ${AWS_REGION}
@@ -29,10 +29,10 @@ pipeline {
     
     post {
         success {
-            echo "Successfully uploaded sample.text to S3"
+            echo "Successfully uploaded main.py to S3"
         }
         failure {
-            echo "Failed to upload sample.text to S3"
+            echo "Failed to upload main.py to S3"
         }
     }
 }
