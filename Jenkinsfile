@@ -43,6 +43,7 @@ pipeline {
                                 --steps Type=Spark,Name=SparkJob_${TIMESTAMP},\
                                 ActionOnFailure=CONTINUE,\
                                 Args=[--deploy-mode,cluster,${env.S3_FILE_PATH}]
+
                                 
                             # Wait for step to complete
                             aws emr wait step-complete \
