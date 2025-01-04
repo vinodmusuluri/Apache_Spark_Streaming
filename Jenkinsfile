@@ -14,7 +14,6 @@ pipeline {
                         string(credentialsId: "AWS_ACCESS_KEY_ID", variable: 'AWS_ACCESS_KEY_ID'),  // Access Key as secret text
                         string(credentialsId: "AWS_SECRET_ACCESS_KEY", variable: 'AWS_SECRET_ACCESS_KEY')  // Secret Key as secret text
                     ]) {
-                        // Upload a single file to S3 using the AWS credentials provided
                         sh """
                             aws s3 cp src/main.py s3://${S3_BUCKET}/ \
                                 --region ${AWS_REGION}
