@@ -4,21 +4,22 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-1'
         S3_BUCKET = 'vinod123-test'
-        AWS_ACCESS_KEY_ID = 'AKIAWGNYAX2ZZV7VXHZB'
-        AWS_SECRET_ACCESS_KEY = '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'
     }
     
     stages {
         stage('Upload to S3') {
             steps {
                 script {
-                    // Upload a single file to S3
-                    sh """
-                        export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-                        export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-                        aws s3 cp src/main.py s3://${S3_BUCKET}/ \
-                            --region ${AWS_REGION}
-                    """
+                    withCredentials([
+                        string(credentialsId: "AWS_ACCESS_KEY_ID", variable: 'AWS_ACCESS_KEY_ID'),  // Access Key as secret text
+                        string(credentialsId: "AWS_SECRET_ACCESS_KEY", variable: 'AWS_SECRET_ACCESS_KEY')  // Secret Key as secret text
+                    ]) {
+                        // Upload a single file to S3 using the AWS credentials provided
+                        sh """
+                            aws s3 cp src/main.py s3://${S3_BUCKET}/ \
+                                --region ${AWS_REGION}
+                        """
+                    }
                 }
             }
         }
