@@ -38,8 +38,8 @@ pipeline {
                         
                         sh """
                             aws emr add-steps \
-                                --cluster-id "j-5GFF4L0LR4O0" \
-                                --region ${AWS_REGION} \
+                                --cluster-id 'j-1OJRJ1LWIFDLA' \
+                                --region 'us-east-1f' \
                                 --steps Type=Spark,Name=SparkJob_${TIMESTAMP},\
                                 ActionOnFailure=CONTINUE,\
                                 Args=[--deploy-mode,cluster,${env.S3_FILE_PATH}]
