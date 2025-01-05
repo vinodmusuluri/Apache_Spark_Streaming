@@ -38,15 +38,26 @@ pipeline {
                             aws emr add-steps \
                                 --cluster-id ${EMR_CLUSTER_ID} \
                                 --region ${AWS_REGION} \
-                                --steps Type=Spark,Name=SparkJob_${TIMESTAMP},\
-                                ActionOnFailure=CONTINUE,\
-                                Args=[--deploy-mode,cluster,\
-                                --conf,spark.jars=s3://aws-glue-reltio-bucket/snowflake-jars/snowflake-jdbc-3.19.0.jar\\,s3://aws-glue-reltio-bucket/snowflake-jars/spark-snowflake_2.12-3.1.0.jar\\,s3://aws-glue-reltio-bucket/snowflake-jars/spark-avro_2.12-3.4.0.jar,\
-                                --conf,py-files=s3://aws-glue-reltio-bucket/snowflake-jars/Apache_Spark_Streaming.zip,\
-                                --archives,s3://aws-glue-reltio-bucket/snowflake-jars/Apache_Spark_Streaming.zip,\
-                                --conf,spark.executorEnv.PYTHONPATH=/mnt/var/lib/spark/python/lib/py-files,\
-                                --conf,spark.jars.packages=org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3,\
-                                ${env.S3_FILE_PATH}]
+                                --steps '[{
+                                    "Type": "Spark",
+                                    "Name": "SparkJob_${TIMESTAMP}",
+                                    "ActionOnFailure": "CONTINUE",
+                                    "Args": [
+                                        "--deploy-mode",
+                                        "cluster",
+                                        "--conf",
+                                        "spark.jars=s3://aws-glue-reltio-bucket/snowflake-jars/snowflake-jdbc-3.19.0.jar,s3://aws-glue-reltio-bucket/snowflake-jars/spark-snowflake_2.12-3.1.0.jar,s3://aws-glue-reltio-bucket/snowflake-jars/spark-avro_2.12-3.4.0.jar",
+                                        "--conf",
+                                        "py-files=s3://aws-glue-reltio-bucket/snowflake-jars/Apache_Spark_Streaming.zip",
+                                        "--archives",
+                                        "s3://aws-glue-reltio-bucket/snowflake-jars/Apache_Spark_Streaming.zip",
+                                        "--conf",
+                                        "spark.executorEnv.PYTHONPATH=/mnt/var/lib/spark/python/lib/py-files",
+                                        "--conf",
+                                        "spark.jars.packages=org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3",
+                                        "${env.S3_FILE_PATH}"
+                                    ]
+                                }]'
                             
                             # Wait for step to complete
                             aws emr wait step-complete \
