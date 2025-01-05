@@ -38,7 +38,7 @@ pipeline {
                         
                         sh """
                             aws emr add-steps \
-                                --cluster-id ${EMR_CLUSTER_ID} \
+                                --cluster-id "j-5GFF4L0LR4O0" \
                                 --region ${AWS_REGION} \
                                 --steps Type=Spark,Name=SparkJob_${TIMESTAMP},\
                                 ActionOnFailure=CONTINUE,\
@@ -47,7 +47,7 @@ pipeline {
                                 
                             # Wait for step to complete
                             aws emr wait step-complete \
-                                --cluster-id ${EMR_CLUSTER_ID} \
+                                --cluster-id  "j-5GFF4L0LR4O0" \
                                 --step-id \$(aws emr list-steps \
                                     --cluster-id ${EMR_CLUSTER_ID} \
                                     --region ${AWS_REGION} \
