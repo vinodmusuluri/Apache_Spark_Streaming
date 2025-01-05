@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-1'
         S3_BUCKET = 'vinod123-test'
-        EMR_CLUSTER_ID = 'j-vinod-test'
+        EMR_CLUSTER_ID = 'j-1OJRJ1LWIFDLA'
         TIMESTAMP = sh(script: 'date +%Y%m%d_%H%M%S', returnStdout: true).trim()
     }
     
@@ -18,7 +18,6 @@ pipeline {
                         string(credentialsId: "AWS_ACCESS_KEY_ID", variable: 'AWS_ACCESS_KEY_ID'),
                         string(credentialsId: "AWS_SECRET_ACCESS_KEY", variable: 'AWS_SECRET_ACCESS_KEY')
                     ]) {
-                        // Upload with timestamp to ensure latest version
                         sh """
                             aws s3 cp src/main.py ${env.S3_FILE_PATH} \
                                 --region ${AWS_REGION}
@@ -35,19 +34,23 @@ pipeline {
                         string(credentialsId: "AWS_ACCESS_KEY_ID", variable: 'AWS_ACCESS_KEY_ID'),
                         string(credentialsId: "AWS_SECRET_ACCESS_KEY", variable: 'AWS_SECRET_ACCESS_KEY')
                     ]) {
-                        
                         sh """
                             aws emr add-steps \
-                                --cluster-id 'j-1OJRJ1LWIFDLA' \
-                                --region 'us-east-1f' \
+                                --cluster-id ${EMR_CLUSTER_ID} \
+                                --region ${AWS_REGION} \
                                 --steps Type=Spark,Name=SparkJob_${TIMESTAMP},\
                                 ActionOnFailure=CONTINUE,\
-                                Args=[--deploy-mode,cluster,${env.S3_FILE_PATH}]
-
-                                
+                                Args=[--deploy-mode,cluster,\
+                                --conf,spark.jars=s3://aws-glue-reltio-bucket/snowflake-jars/snowflake-jdbc-3.19.0.jar\\,s3://aws-glue-reltio-bucket/snowflake-jars/spark-snowflake_2.12-3.1.0.jar\\,s3://aws-glue-reltio-bucket/snowflake-jars/spark-avro_2.12-3.4.0.jar,\
+                                --conf,py-files=s3://aws-glue-reltio-bucket/snowflake-jars/Apache_Spark_Streaming.zip,\
+                                --archives,s3://aws-glue-reltio-bucket/snowflake-jars/Apache_Spark_Streaming.zip,\
+                                --conf,spark.executorEnv.PYTHONPATH=/mnt/var/lib/spark/python/lib/py-files,\
+                                --conf,spark.jars.packages=org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3,\
+                                ${env.S3_FILE_PATH}]
+                            
                             # Wait for step to complete
                             aws emr wait step-complete \
-                                --cluster-id  "j-5GFF4L0LR4O0" \
+                                --cluster-id ${EMR_CLUSTER_ID} \
                                 --step-id \$(aws emr list-steps \
                                     --cluster-id ${EMR_CLUSTER_ID} \
                                     --region ${AWS_REGION} \
@@ -69,4 +72,3 @@ pipeline {
         }
     }
 }
-
